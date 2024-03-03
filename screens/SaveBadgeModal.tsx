@@ -24,21 +24,19 @@ const colorOptions = [
 ]
 
 export const SaveBadgeModal = (props: { badgeDetected?: boolean, navigation: any }) => {
-    const discoveredBadge = useScanForNFC();
+    const {id, data} = useScanForNFC();
 
     const saveBadge = (value: { name: string }) => {
-        if (!discoveredBadge?.id) return;
+        if (!id) return;
         const badge: Badge = {
-            id: discoveredBadge.id,
+            id,
             name: value.name,
-            data: discoveredBadge.data,
+            data,
             dateCreated: new Date(),
             color: colorOptions[Math.floor(Math.random() * colorOptions.length + 1)]
         };
-
-        storage.delete(`badge.${discoveredBadge.id}`);
-        storage.set(`badge.${discoveredBadge.id}`, JSON.stringify(badge));
-        console.log(`Set id: ${discoveredBadge.id} as `, JSON.stringify(badge));
+        storage.set(`badge.${id}`, JSON.stringify(badge));
+        console.log(`Set id: ${id} as `, JSON.stringify(badge));
         props.navigation.navigate('Home');
     }
 
@@ -51,12 +49,12 @@ export const SaveBadgeModal = (props: { badgeDetected?: boolean, navigation: any
             {/* Badge Detection */}
             <View>
 
-                {!discoveredBadge?.id && <View style={{ flexDirection: 'row', marginBottom: 20, alignItems: 'center' }}>
+                {!id && <View style={{ flexDirection: 'row', marginBottom: 20, alignItems: 'center' }}>
                     <ActivityIndicator size={25}></ActivityIndicator>
                     <Text style={{ fontSize: 16, marginLeft: 15 }}>Go ahead and scan your badge now, we're looking for it...</Text>
                 </View>}
 
-                {discoveredBadge?.id && <View style={{ flexDirection: 'row', marginBottom: 20, alignItems: 'center' }}>
+                {id && <View style={{ flexDirection: 'row', marginBottom: 20, alignItems: 'center' }}>
                     <FontAwesomeIcon size={25} icon={faCheckCircle} color="green"></FontAwesomeIcon>
                     <Text style={{ fontSize: 16, marginLeft: 15 }}>Found your badge! You can add details below</Text>
                 </View>}

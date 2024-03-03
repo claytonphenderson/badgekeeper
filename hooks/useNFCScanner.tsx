@@ -5,7 +5,8 @@ import { storage } from "../App";
 import { Badge } from "../models/Badge";
 
 export const useScanForNFC = () => {
-    const [badge, setBadge] = useState<Badge>();
+    const [id, setId] = useState<string>();
+    const [data, setData] = useState<string>();
 
     useEffect(() => {
         const scanForBadge = async () => {
@@ -16,12 +17,8 @@ export const useScanForNFC = () => {
 
                 const resultString = Ndef.uri.decodePayload((tag?.ndefMessage[0] as any).payload);
                 const hash = await sha256(resultString);
-
-                const existingJson = storage.getString(`badge.${hash}`);
-                if (existingJson) {
-                    console.log(existingJson)
-                    setBadge(JSON.parse(existingJson));
-                }
+                setId(hash);
+                setData(resultString);
 
             } catch (ex) {
                 console.error(ex);
@@ -37,5 +34,5 @@ export const useScanForNFC = () => {
         }
     }, []);
 
-    return badge;
+    return {id, data};
 }
