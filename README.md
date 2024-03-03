@@ -11,6 +11,8 @@ This is a toy app that can store a collection of NFC badge data and write saved 
 - Write saved badge data to physical NFC badges.  Emulation of NFC Forum 2 badges seems to not be supported by Android at this time as far as I can tell.  
 
 ## To do
+- delete entry
+- indicate if a badge is already assigned to saved entry
+- add unit tests
 - clean up the UI to make it clearer what is happening and when
 - add tags to the badge entries to make it easier to organize/sort/filter them
-- add unit tests
