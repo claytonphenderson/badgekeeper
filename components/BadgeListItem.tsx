@@ -1,10 +1,11 @@
-import { Text, Touchable, TouchableOpacity, View } from "react-native"
+import { NativeModules, Text, Touchable, TouchableOpacity, View } from "react-native"
 import { useMMKVObject } from "react-native-mmkv"
 import { Badge } from "../models/Badge"
 import moment from "moment";
 import NfcManager, { Ndef, NfcTech } from "react-native-nfc-manager";
 import { useState } from "react";
 
+let currentNdef = '';
 export const BadgeListItem = (props: { badgeKey: string }) => {
     const [badge, _] = useMMKVObject<Badge>(props.badgeKey);
     const [writing, setWriting] = useState<boolean>(false);
@@ -33,12 +34,21 @@ export const BadgeListItem = (props: { badgeKey: string }) => {
     const cancelWrite = async () => {
         if (writing) await NfcManager.cancelTechnologyRequest();
     }
+    const setTag = () => {
+        currentNdef = badge!.data;
+        NativeModules.HostCard.setTag(badge!.data);
+    }
+    if (!currentNdef) {
+        setTag();
+    }
+    const isCurrent = currentNdef === badge!.data;
 
     return (
         <TouchableOpacity
+            onPress={setTag}
             onLongPress={write}
             onPressOut={cancelWrite}
-            style={writing ? { backgroundColor: 'red' } : null}
+            style={writing ? { backgroundColor: 'red' } : isCurrent ? { backgroundColor: 'green' } : null}
         >
             <View style={{ height: 90, justifyContent: 'center', paddingHorizontal: 20 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>

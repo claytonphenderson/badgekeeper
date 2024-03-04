@@ -24,20 +24,35 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
-      
-      <service
-        android:name="com.reactnativehce.services.CardService"
-        android:exported="true"
-        android:enabled="false"
-        android:permission="android.permission.BIND_NFC_SERVICE" >
-        <intent-filter>
-          <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" />
-          <category android:name="android.intent.category.DEFAULT"/>
-        </intent-filter>
 
-        <meta-data
-          android:name="android.nfc.cardemulation.host_apdu_service"
-          android:resource="@xml/aid_list" />
-    </service>
+        <!--   declaration the HCE service
+
+      name          : name of the Class that will implement the Service callbacks
+      exported      : represents accessibility by other applications
+      permission    : the Service has to Bind to the NFC service in order to be able to use NFC
+
+      intent-filter : when the Android system detects that an external Card Reader is trying to read a card,
+                      it fires a `HOST_APDU_SERVICE` action, our service having registered to that action,
+                      will be called, and then we can do whatever we want once our service is called into action.
+
+      meta-data     : in order for the system to know which services to call based on which AID
+                      the reader is trying to communicate with, we need to declare the `meta-data` tag
+                      and point to an XML resource.
+
+      -->
+
+        <service
+            android:name=".HostCardEmulatorService"
+            android:exported="true"
+            android:permission="android.permission.BIND_NFC_SERVICE">
+            <intent-filter>
+                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.nfc.cardemulation.host_apdu_service"
+                android:resource="@xml/aid_list" />
+        </service>
+
     </application>
 </manifest>
