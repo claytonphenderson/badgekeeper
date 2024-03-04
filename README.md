@@ -16,3 +16,7 @@ This is a toy app that can store a collection of NFC badge data and write saved 
 - add unit tests
 - clean up the UI to make it clearer what is happening and when
 - add tags to the badge entries to make it easier to organize/sort/filter them
+
+## APK Download
+If you're cool with downloading a file from a stranger, go nuts.
+https://claytonpersonal.blob.core.windows.net/public/badgekeeper.apk
