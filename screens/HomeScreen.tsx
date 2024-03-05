@@ -1,11 +1,27 @@
-import { FlatList, Text, TouchableOpacity, View } from "react-native"
+import { FlatList, NativeModules, Text, TouchableOpacity, View } from "react-native"
 import { BadgeListItem } from "../components/BadgeListItem"
 import { useStoredBadgesList } from "../hooks/useStoredBadgesList"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import { storage } from "../App";
+import { Badge } from "../models/Badge";
 
+
+const useNfcEmulation = () =>{
+    const [current, setCurrent] = useState<string>();
+    useEffect(()=>{
+        if(!current) return;
+        const badge = JSON.parse(storage.getString(current) ?? '') as Badge;
+        console.log(badge);
+        NativeModules.HostCard.setTag(badge!.data)
+    }, [current]);
+
+    return {current, setCurrent};
+}
 
 export const HomeScreen = (props: any) => {
+    const {current, setCurrent} = useNfcEmulation();
     const badgeKeys = useStoredBadgesList();
 
     return (
@@ -13,7 +29,7 @@ export const HomeScreen = (props: any) => {
             <FlatList
                 ListHeaderComponent={() => <Header {...props}></Header>}
                 data={Array.from(badgeKeys)}
-                renderItem={({ item }) => <BadgeListItem badgeKey={item}></BadgeListItem>}
+                renderItem={({ item }) => <BadgeListItem badgeKey={item} setTag={()=>setCurrent(item)} isCurrent={current === item}></BadgeListItem>}
             ></FlatList>
         </View>
     )
